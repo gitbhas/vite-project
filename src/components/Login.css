@@ -4,10 +4,12 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--aws-squid-ink) 0%, var(--aws-deep-blue) 100%);
+  background: linear-gradient(135deg, var(--aws-squid-ink) 0%, var(--aws-deep-blue) 70%, var(--aws-orange) 100%);
   padding: 20px;
   position: relative;
   overflow: hidden;
+  animation: gradientShift 15s ease infinite;
+  background-size: 200% 200%;
 }
 
 .login-container::before {
@@ -17,26 +19,50 @@
   height: 100%;
   background: linear-gradient(
     45deg,
-    rgba(255, 153, 0, 0.03) 0%,
+    rgba(255, 153, 0, 0.05) 0%,
     rgba(255, 153, 0, 0) 100%
   );
   transform: rotate(-45deg);
   top: -50%;
   left: -25%;
   pointer-events: none;
+  animation: shimmer 8s infinite linear;
 }
 
 .login-content {
   background: rgba(255, 255, 255, 0.98);
   padding: 2.5rem;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
-              0 10px 15px rgba(0, 0, 0, 0.1);
+              0 10px 15px rgba(0, 0, 0, 0.1),
+              0 0 0 1px rgba(255, 153, 0, 0.1),
+              0 0 20px rgba(255, 153, 0, 0.05);
   width: 100%;
   max-width: 400px;
   position: relative;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-content:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15),
+              0 12px 20px rgba(0, 0, 0, 0.1),
+              0 0 0 1px rgba(255, 153, 0, 0.2),
+              0 0 25px rgba(255, 153, 0, 0.1);
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .login-header {
@@ -47,6 +73,57 @@
 .aws-logo {
   height: 40px;
   margin-bottom: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: transform 0.3s ease;
+}
+
+.aws-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Form elements styling */
+.login-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: var(--aws-orange);
+  box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.1);
+}
+
+.login-form button {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(to right, var(--aws-orange), #ff9900);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-form button:hover {
+  background: linear-gradient(to right, #ff9900, #ffac33);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(255, 153, 0, 0.2);
+}
+
+@keyframes shimmer {
+  0% {
+    transform: rotate(-45deg) translateX(-50%);
+  }
+  100% {
+    transform: rotate(-45deg) translateX(50%);
+  }
 }
 
 .login-title {
