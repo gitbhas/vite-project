@@ -1,0 +1,23 @@
+.text-aws-orange {
+  color: var(--aws-orange);
+}
+
+.text-aws-success {
+  color: var(--aws-success);
+}
+
+.text-aws-red {
+  color: var(--aws-red);
+}
+
+.bg-aws-orange {
+  background-color: var(--aws-orange);
+}
+
+.bg-aws-success {
+  background-color: var(--aws-success);
+}
+
+.bg-aws-red {
+  background-color: var(--aws-red);
+}

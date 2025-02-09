@@ -1,0 +1,129 @@
+.card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: linear-gradient(180deg, white 0%, #fafafa 100%);
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--aws-border);
+  margin-bottom: 1.5rem;
+}
+
+.card-title {
+  color: var(--aws-squid-ink);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.card-body {
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--aws-squid-ink);
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.625rem;
+  border: 1px solid var(--aws-border);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  background: linear-gradient(to bottom, #fafafa, #ffffff);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--aws-orange);
+  box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
+  background-color: #fff;
+}
+
+.form-control {
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+}
+
+.form-control:hover {
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23232F3E' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  padding-right: 2rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--aws-squid-ink);
+}
+
+.status-message {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  animation: slideIn 0.2s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-message::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.status-message.success {
+  background-color: #e6f4ea;
+  color: var(--aws-success);
+  border: 1px solid #b7dfb9;
+}
+
+.status-message.error {
+  background-color: #fde7e7;
+  color: var(--aws-red);
+  border: 1px solid #ffc4c4;
+}
+
+.card-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}

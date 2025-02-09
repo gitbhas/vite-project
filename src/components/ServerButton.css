@@ -1,0 +1,46 @@
+.server-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.server-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.server-button-start {
+  background-color: var(--aws-success);
+  color: white;
+}
+
+.server-button-start:hover:not(:disabled) {
+  background-color: #166c0c;
+}
+
+.server-button-stop {
+  background-color: var(--aws-red);
+  color: white;
+}
+
+.server-button-stop:hover:not(:disabled) {
+  background-color: #b82b0f;
+}
+
+.server-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.server-button:hover .server-icon {
+  transform: scale(1.1);
+}

@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import './ServerCard.css';
+import './Loading.css';
+import stopIcon from '../assets/server-stop.svg';
 
 const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
@@ -16,6 +19,7 @@ const ServerStop = () => {
   const [server, setServer] = useState('');
   const [parameters, setParameters] = useState('');
   const [status, setStatus] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleStopServer = async () => {
     if (!server) {
@@ -23,6 +27,7 @@ const ServerStop = () => {
       return;
     }
 
+    setLoading(true);
     try {
       const response = await fetch(`${API_ENDPOINT}/stop-server`, {
         method: 'POST',
@@ -39,13 +44,23 @@ const ServerStop = () => {
       setStatus(data.message || 'Server stop initiated');
     } catch (error) {
       setStatus(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="card">
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+        </div>
+      )}
       <div className="card-header">
-        <h2 className="card-title">Stop Server</h2>
+        <h2 className="card-title">
+          <img src={stopIcon} alt="" className="card-icon" />
+          Stop Server
+        </h2>
       </div>
       <div className="card-body">
         <form onSubmit={(e) => e.preventDefault()}>

@@ -1,12 +1,197 @@
 :root {
-  --aws-blue: #232F3E;
+  --aws-squid-ink: #232F3E;
+  --aws-deep-blue: #37475A;
   --aws-orange: #FF9900;
-  --aws-light-blue: #0073BB;
-  --aws-bg: #F2F3F3;
+  --aws-orange-hover: #ff8000;
+  --aws-red: #D13212;
   --aws-success: #1D8102;
-  --aws-error: #D13212;
   --aws-border: #E9EAEA;
   --aws-hover: #FAFAFA;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  background-color: var(--aws-squid-ink);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-logo {
+  height: 30px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: white;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding: 0 1rem 1rem;
+  border-bottom: 1px solid var(--aws-border);
+  position: relative;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    var(--aws-orange) 0%, 
+    var(--aws-orange) 30%, 
+    transparent 100%
+  );
+}
+
+.page-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.page-icon {
+  width: 2rem;
+  height: 2rem;
+  color: var(--aws-squid-ink);
+  opacity: 0.9;
+}
+
+.animated-icon {
+  animation: fadeInRotate 0.6s ease-out;
+}
+
+@keyframes fadeInRotate {
+  from {
+    opacity: 0;
+    transform: rotate(-180deg) scale(0.5);
+  }
+  to {
+    opacity: 0.9;
+    transform: rotate(0) scale(1);
+  }
+}
+
+.page-title {
+  color: var(--aws-squid-ink);
+  font-size: 1.875rem;
+  font-weight: 600;
+}
+
+.server-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.server-card {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.server-card {
+  background: linear-gradient(to bottom, white, #fafafa);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04), 
+              0 2px 4px rgba(0, 0, 0, 0.02),
+              0 4px 8px rgba(0, 0, 0, 0.01);
+  border: 1px solid var(--aws-border);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.97);
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.server-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--aws-orange);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.server-card:hover::before {
+  opacity: 1;
+}
+
+.server-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06),
+              0 4px 8px rgba(0, 0, 0, 0.04),
+              0 8px 16px rgba(0, 0, 0, 0.02);
+}
+
+.card-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  color: var(--aws-squid-ink);
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.card:hover .card-icon {
+  opacity: 1;
 }
 
 * {
@@ -17,9 +202,36 @@
 }
 
 body {
-  background-color: var(--aws-bg);
-  color: var(--aws-blue);
+  background-color: #f8f9fa;
+  color: var(--aws-squid-ink);
   line-height: 1.5;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f3 100%);
+  background-attachment: fixed;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(180deg, rgba(35, 47, 62, 0.03) 0%, rgba(35, 47, 62, 0) 100%);
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 150px;
+  background: linear-gradient(0deg, rgba(35, 47, 62, 0.02) 0%, rgba(35, 47, 62, 0) 100%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .navbar {

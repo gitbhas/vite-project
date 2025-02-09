@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import './ServerCard.css';
+import './Loading.css';
+import startIcon from '../assets/server-start.svg';
 
 const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
@@ -16,6 +19,7 @@ const ServerStart = () => {
   const [server, setServer] = useState('');
   const [parameters, setParameters] = useState('');
   const [status, setStatus] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleStartServer = async () => {
     if (!server) {
@@ -23,6 +27,7 @@ const ServerStart = () => {
       return;
     }
 
+    setLoading(true);
     try {
       const response = await fetch(`${API_ENDPOINT}/start-server`, {
         method: 'POST',
@@ -39,13 +44,23 @@ const ServerStart = () => {
       setStatus(data.message || 'Server start initiated');
     } catch (error) {
       setStatus(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="card">
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+        </div>
+      )}
       <div className="card-header">
-        <h2 className="card-title">Start Server</h2>
+        <h2 className="card-title">
+          <img src={startIcon} alt="" className="card-icon" />
+          Start Server
+        </h2>
       </div>
       <div className="card-body">
         <form onSubmit={(e) => e.preventDefault()}>
@@ -53,6 +68,7 @@ const ServerStart = () => {
             <label htmlFor="serverSelect">Select Server</label>
             <select
               id="serverSelect"
+              className="form-control form-select"
               value={server}
               onChange={(e) => setServer(e.target.value)}
               required
