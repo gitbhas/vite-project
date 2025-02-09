@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Server Management Console</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo">AWS Server Management</div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Server Management Console</h1>
+        </div>
+
+        <div class="card-container">
+            <!-- Start Server Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Start Server</h2>
+                </div>
+                <div class="card-body">
+                    <form id="startServerForm">
+                        <div class="form-group">
+                            <label for="serverSelect">Select Server</label>
+                            <select id="serverSelect" required>
+                                <option value=""></option>
+                                <option value="ddps-dev-ef01">ddps-dev-ef01</option>
+                                <option value="ddps-tst-ef01">ddps-tst-ef01</option>
+                                <option value="ddps-int-ef01">ddps-int-ef01</option>
+								<option value="ddps-prd-ef01">ddps-prd-ef01</option>
+								<option value="prs-prd-ap01">prs-prd-ap01</option>
+								<option value="prs-tst-ap01">prs-tst-ap01</option>
+								<option value="prs-int-ap01">prs-int-ap01</option>
+								
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Parameters (Optional)
+                                <div class="tooltip">ⓘ
+                                    <span class="tooltiptext">Additional start parameters in JSON format</span>
+                                </div>
+                            </label>
+                            <input type="text" id="startParameters" placeholder='{"key": "value"}'>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="startServer()">Start Server</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Stop Server Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Stop Server</h2>
+                </div>
+                <div class="card-body">
+                    <form id="stopServerForm">
+                        <div class="form-group">
+                            <label for="stopServerSelect">Select Server</label>
+                            <select id="stopServerSelect" required>
+                                <option value=""></option>
+                                 <option value="ddps-dev-ef01">ddps-dev-ef01</option>
+                                <option value="ddps-tst-ef01">ddps-tst-ef01</option>
+                                <option value="ddps-int-ef01">ddps-int-ef01</option>
+								<option value="ddps-prd-ef01">ddps-prd-ef01</option>
+								<option value="prs-prd-ap01">prs-prd-ap01</option>
+								<option value="prs-tst-ap01">prs-tst-ap01</option>
+								<option value="prs-int-ap01">prs-int-ap01</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Parameters (Optional)
+                                <div class="tooltip">ⓘ
+                                    <span class="tooltiptext">Force stop: {"force": true}</span>
+                                </div>
+                            </label>
+                            <input type="text" id="stopParameters" placeholder='{"force": false}'>
+                        </div>
+                        <button type="button" class="btn btn-danger" onclick="stopServer()">Stop Server</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Run SSM Document Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Run SSM Document</h2>
+                </div>
+                <div class="card-body">
+                    <form id="ssmForm">
+                        <div class="form-group">
+                            <label for="ssmServerSelect">Target Server</label>
+                            <select id="ssmServerSelect" required>
+                                <option value="ddps-dev-ef01">ddps-dev-ef01</option>
+                                <option value="ddps-tst-ef01">ddps-tst-ef01</option>
+                                <option value="ddps-int-ef01">ddps-int-ef01</option>
+								<option value="ddps-prd-ef01">ddps-prd-ef01</option>
+								<option value="prs-prd-ap01">prs-prd-ap01</option>
+								<option value="prs-tst-ap01">prs-tst-ap01</option>
+								<option value="prs-int-ap01">prs-int-ap01</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="documentSelect">SSM Document</label>
+                            <select id="documentSelect" required>
+                                <option value=""></option>
+                                <option value="DDPS-Clear-S3FS-Cache">DDPS-Clear-S3FS-Cache</option>
+                                <option value="ddps-s3fs-cache-prs">ddps-s3fs-cache-prs</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Parameters (Optional)
+                                <div class="tooltip">ⓘ
+                                    <span class="tooltiptext">Document parameters in JSON format</span>
+                                </div>
+                            </label>
+                            <input type="text" id="parameters" placeholder='{"commands": ["echo Hello"]}'>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="runSSMDocument()">Run SSM Document</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar" id="result">
+            Status: Ready
+        </div>
+    </div>
+   
+      <script type="module" src="/src/main.js"></script>
+
+</html>
+
