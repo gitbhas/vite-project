@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
+import './Login.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -18,10 +19,10 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <form onSubmit={handleSubmit}>
-        <h2>Login</h2>
+      <form onSubmit={handleSubmit} className="login-form">
+        <h2>AWS Server Management</h2>
         {error && <div className="error">{error}</div>}
-        <div>
+        <div className="form-group">
           <label>Email:</label>
           <input
             type="email"
@@ -31,16 +32,17 @@ const Login = () => {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Password:</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
             required
           />
         </div>
-        <button type="submit">Sign In</button>
+        <button type="submit" className="submit-button">Sign In</button>
       </form>
     </div>
   );
