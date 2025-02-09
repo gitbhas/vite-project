@@ -7,30 +7,7 @@ document.querySelector('#app').innerHTML = `
          // API Configuration - Replace with your API Gateway URL
         const API_ENDPOINT = 'https://3loz81r0bg.execute-api.us-east-1.amazonaws.com/initial';
 
-        // Helper function to show success message
-        function showSuccess(message) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = `
-                <div style="display: flex; align-items: center;">
-                    <span style="color: var(--aws-success); margin-right: 8px;">✓</span>
-                    <span>${message}</span>
-                </div>
-            `;
-            resultDiv.style.borderLeft = '4px solid var(--aws-success)';
-        }
-
-        // Helper function to show error message
-        function showError(message) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = `
-                <div style="display: flex; align-items: center;">
-                    <span style="color: var(--aws-error); margin-right: 8px;">✕</span>
-                    <span>${message}</span>
-                </div>
-            `;
-            resultDiv.style.borderLeft = '4px solid var(--aws-error)';
-        }
-
+      
            // Start Server
 // Start Server function
 async function startServer() {
