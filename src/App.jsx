@@ -7,7 +7,9 @@ import Login from './components/Login';
 import { useAuth } from './components/AuthContext';
 import './style.css';
 import './components/Button.css';
+import './components/Navbar.css';
 import { FaServer } from 'react-icons/fa';
+
 import Breadcrumb from './components/Breadcrumb';
 
 const App = () => {
@@ -23,10 +25,7 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <nav className="navbar">
-        <img src="/src/assets/aws-logo.svg" alt="AWS Logo" className="navbar-logo" />
-        <button onClick={signOut} className="btn btn-secondary">Sign Out</button>
-      </nav>
+      <Navbar />
 
       <main className="main-content">
         <Breadcrumb />
