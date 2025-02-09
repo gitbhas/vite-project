@@ -27,7 +27,7 @@ const Login = () => {
     <div className="login-container">
       <div className="login-content">
         <div className="login-header">
-          <img src="src/assets/aws-logo.png" alt="AWS Logo" className="aws-logo" />
+          <img src="src/assets/aws-logo.svg" alt="AWS Logo" className="aws-logo" />
           <h1 className="login-title">
             <FaServer className="server-icon" />
             Server Management Console
