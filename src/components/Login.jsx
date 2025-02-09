@@ -22,11 +22,12 @@ const Login = () => {
         <h2>Login</h2>
         {error && <div className="error">{error}</div>}
         <div>
-          <label>Username:</label>
+          <label>Email:</label>
           <input
-            type="text"
+            type="email"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter your email"
             required
           />
         </div>

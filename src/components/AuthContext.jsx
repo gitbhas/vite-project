@@ -23,10 +23,24 @@ export const AuthProvider = ({ children }) => {
 
   const signIn = async (username, password) => {
     try {
+      console.log('Attempting sign in with:', { username });
       const user = await Auth.signIn(username, password);
       setUser(user);
       return user;
     } catch (error) {
+      console.error('Sign in error:', {
+        code: error.code,
+        name: error.name,
+        message: error.message,
+        error
+      });
+      if (error.code === 'NotAuthorizedException') {
+        throw new Error('Incorrect username or password');
+      } else if (error.code === 'UserNotFoundException') {
+        throw new Error('User does not exist');
+      } else if (error.code === 'InvalidParameterException') {
+        throw new Error('Please check your username/password format');
+      }
       throw error;
     }
   };
