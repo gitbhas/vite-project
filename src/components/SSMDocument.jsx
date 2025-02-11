@@ -3,18 +3,21 @@ import React, { useState } from 'react';
 const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 const serverOptions = [
-  'ddps-dev-ef01',
-  'ddps-tst-ef01',
-  'ddps-int-ef01',
-  'ddps-prd-ef01',
-  'prs-prd-ap01',
-  'prs-tst-ap01',
-  'prs-int-ap01'
+  'ddps-dev-ap01',
+  'ddps-tst-ap01',
+  'ddps-int-ap01',
+  'ddps-ira-dev-ap01', 
+'ddps-ira-tst-ap01' ,
+'ddps-ira-int-ap01' ,
+'ddps-devtc-ap01' ,
+'ddps-inttc-ap01' ,
+'ddps-ira-devtc-ap01',
+'ddps-ira-inttc-ap01'
 ];
 
 const documentOptions = [
   'DDPS-Clear-S3FS-Cache',
-  'ddps-s3fs-cache-prs'
+  'ddps-s3fs-cache-nomnt'
 ];
 
 const SSMDocument = () => {
