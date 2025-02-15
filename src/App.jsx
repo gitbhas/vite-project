@@ -31,8 +31,6 @@ const App = () => {
 
         <div className="card-container">
           <ServerStart />
-          <ServerStop />
-          <SSMDocument />
         </div>
       </div>
     </>
