@@ -37,6 +37,9 @@ function App() {
   const switchTab = (tab) => {
     setCurrentTab(tab);
     setShowDocumentation(tab === 'documentation');
+    setPayload('');
+    setResponse(null);
+    setError(null);
   };
 
   const sendRequest = async () => {
@@ -69,7 +72,6 @@ function App() {
       };
       
       setResponse(fullResponse);
-      setPayload(''); // Clear input after successful submission
       
     } catch (error) {
       console.error('Request error:', error);
@@ -77,34 +79,31 @@ function App() {
     }
   };
 
+  const loadExamplePayload = () => {
+    const example = getExampleJson();
+    setPayload(JSON.stringify(example, null, 2));
+  };
+
   const getExampleJson = () => {
     switch(currentTab) {
       case 'create-ami':
         return {
-          "bucket_name": "ddps-s301-v4nprd.admin",
-          "object_key": "cloudformation/v4non-prd-silverami-template2.yml",
-          "stack_name": "rhel8-silvami-lambda-v2",
-          "ami_name": "rhel8-silver-img-011824",
-          "imageId": "ami-0b5103cacdbf2e9bb"
+          bucket_name: "XXXXXXXXXXXXXXXXXXXXXX",
+          object_key: "cloudformation/v4non-prd-silverami-template2.yml",
+          stack_name: "rhel8-silvami-lambda-v2",
+          ami_name: "rhel8-silver-img-011824",
+          imageId: "ami-0b5103cacdbf2e9bb"
         };
       case 'rebuild-prep':
         return {
-          "instance_names": [
-            "ddps-dev-ap01"
-          ],
-          "action": "start"
+          instance_names: ["ddps-dev-ap01"],
+          action: "start"
         };
       case 'server-rebuild':
         return {
-          "instance_names": [
-            "ddps-dev-ap01"
-          ],
-          "bucket_names": [
-            "ddps-dev-v4-landing"
-          ],
-          "launch_template_names": [
-            "ddps-dev-ap01-lt"
-          ]
+          instance_names: ["ddps-dev-ap01"],
+          bucket_names: ["ddps-dev-v4-landing"],
+          launch_template_names: ["ddps-dev-ap01-lt"]
         };
       default:
         return {};
@@ -151,20 +150,26 @@ function App() {
           <div className="card">
             <div className="form-group">
               <label htmlFor="payload">JSON Payload:</label>
-              <textarea
-                id="payload"
-                value={payload}
-                onChange={(e) => setPayload(e.target.value)}
-                placeholder="Enter your JSON payload here..."
-              />
+              <div className="textarea-container">
+                <textarea
+                  id="payload"
+                  value={payload}
+                  onChange={(e) => setPayload(e.target.value)}
+                  placeholder="Enter your JSON payload here..."
+                />
+                <button className="example-button" onClick={loadExamplePayload}>
+                  Load Example
+                </button>
+              </div>
             </div>
 
             <div className="form-group">
-              <button onClick={sendRequest}>Execute Request</button>
+              <button onClick={sendRequest} className="execute-button">Execute Request</button>
             </div>
 
             {response && (
               <div className="response-container">
+                <h3>Response:</h3>
                 <pre className="response">
                   {JSON.stringify(response, null, 2)}
                 </pre>
@@ -184,11 +189,74 @@ function App() {
             <div className="doc-section">
               <h3>Create AMI</h3>
               <div className="description">
-                Creates an Amazon Machine Image (AMI) from the specified instance.
+                Creates an Amazon Machine Image (AMI) from the specified instance. This endpoint handles the creation
+                of AMIs using CloudFormation templates and specified parameters.
               </div>
-              <pre className="json-example">
-                {JSON.stringify(getExampleJson(), null, 2)}
-              </pre>
+              <h4>Request Format:</h4>
+              <div className="json-example">
+{`{
+    "bucket_name": "ddps-s301-v4nprd.admin",
+    "object_key": "cloudformation/v4non-prd-silverami-template2.yml",
+    "stack_name": "rhel8-silvami-lambda-v2",
+    "ami_name": "rhel8-silver-img-011824",
+    "imageId": "ami-0b5103cacdbf2e9bb"
+}`}
+              </div>
+              <div className="parameter-description">
+                <p><strong>bucket_name:</strong> The S3 bucket containing the CloudFormation template</p>
+                <p><strong>object_key:</strong> The path to the template file in the S3 bucket</p>
+                <p><strong>stack_name:</strong> Name for the CloudFormation stack</p>
+                <p><strong>ami_name:</strong> Name for the new AMI</p>
+                <p><strong>imageId:</strong> Base AMI ID to use</p>
+              </div>
+            </div>
+
+            <div className="doc-section">
+              <h3>Rebuild Prep</h3>
+              <div className="description">
+                Prepares instances for rebuild by performing necessary backup operations and state management.
+                This endpoint handles instance start/stop operations as part of the rebuild preparation process.
+              </div>
+              <h4>Request Format:</h4>
+              <div className="json-example">
+{`{
+    "instance_names": [
+        "ddps-dev-ap01"
+    ],
+    "action": "start"
+}`}
+              </div>
+              <div className="parameter-description">
+                <p><strong>instance_names:</strong> Array of EC2 instance names to prepare</p>
+                <p><strong>action:</strong> Action to perform (start/stop)</p>
+              </div>
+            </div>
+
+            <div className="doc-section">
+              <h3>Server Rebuild</h3>
+              <div className="description">
+                Initiates the server rebuild process using specified parameters. This endpoint handles the complete
+                rebuild process including backup verification and instance recreation.
+              </div>
+              <h4>Request Format:</h4>
+              <div className="json-example">
+{`{
+    "instance_names": [
+        "ddps-dev-ap01"
+    ],
+    "bucket_names": [
+        "ddps-dev-v4-landing"
+    ],
+    "launch_template_names": [
+        "ddps-dev-ap01-lt"
+    ]
+}`}
+              </div>
+              <div className="parameter-description">
+                <p><strong>instance_names:</strong> Array of EC2 instance names to rebuild</p>
+                <p><strong>bucket_names:</strong> Array of S3 bucket names for backup/restore</p>
+                <p><strong>launch_template_names:</strong> Array of launch template names to use</p>
+              </div>
             </div>
           </div>
         )}
