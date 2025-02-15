@@ -10,7 +10,7 @@ function App() {
   const [error, setError] = useState(null);
 
   const API_ENDPOINT = 'https://8usizd8fp0.execute-api.us-east-1.amazonaws.com/initial';
-  const API_KEY = process.env.REACT_APP_API_KEY; // Add this line for API key
+  const API_KEY = "AmplifyCognitoAPI$24" //process.env.REACT_APP_API_KEY; // Add this line for API key
 
   const testApiConnection = async () => {
     try {
