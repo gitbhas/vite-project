@@ -156,7 +156,9 @@ button:hover {
 .doc-section {
   margin-bottom: 30px;
 }
-
+.documentation-container {
+  display: block !important;
+}
 .doc-section h3 {
   color: var(--aws-color-primary);
   margin-bottom: 10px;
