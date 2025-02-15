@@ -81,7 +81,7 @@ function App() {
     switch(currentTab) {
       case 'create-ami':
         return {
-          "bucket_name": "XXXXXXXXXXXXXXXXXXXXXX",
+          "bucket_name": "ddps-s301-v4nprd.admin",
           "object_key": "cloudformation/v4non-prd-silverami-template2.yml",
           "stack_name": "rhel8-silvami-lambda-v2",
           "ami_name": "rhel8-silver-img-011824",
