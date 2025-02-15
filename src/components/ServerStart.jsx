@@ -18,7 +18,8 @@ function App() {
         method: 'OPTIONS',
         headers: {
           'Content-Type': 'application/json',
-          'X-Api-Key': API_KEY  // Add API key header
+          'X-Api-Key': API_KEY , // Add origin header// Add API key header
+          'Origin': window.location.origin 
         },
         mode: 'cors',
         credentials: 'omit'
@@ -62,7 +63,8 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'X-Api-Key': API_KEY  // Add API key header
+          'X-Api-Key': API_KEY,  // Add API key header
+          'Origin': window.location.origin
         },
         credentials: 'omit',
         mode: 'cors',
