@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import './App.css';
 
- const [formData, setFormData] = useState({
+function App() {
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: ''
@@ -70,11 +72,6 @@ import React, { useState } from 'react';
 
   return (
     <div className="App">
-      <div className="auth-header">
-        <h2>Welcome {user.username}</h2>
-        <button onClick={signOut}>Sign Out</button>
-      </div>
-
       <h1>Contact Form</h1>
       <form onSubmit={handleSubmit}>
         <div>
@@ -146,3 +143,6 @@ import React, { useState } from 'react';
       )}
     </div>
   );
+}
+
+export default App;
