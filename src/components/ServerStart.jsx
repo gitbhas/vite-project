@@ -10,6 +10,7 @@ function App() {
   const [error, setError] = useState(null);
 
   const API_ENDPOINT = 'https://8usizd8fp0.execute-api.us-east-1.amazonaws.com/initial';
+  const API_KEY = process.env.REACT_APP_API_KEY; // Add this line for API key
 
   const testApiConnection = async () => {
     try {
@@ -17,6 +18,7 @@ function App() {
         method: 'OPTIONS',
         headers: {
           'Content-Type': 'application/json',
+          'X-Api-Key': API_KEY  // Add API key header
         },
         mode: 'cors',
         credentials: 'omit'
@@ -47,6 +49,11 @@ function App() {
       setError(null);
       setResponse(null);
 
+      // Check if API key is configured
+      if (!API_KEY) {
+        throw new Error('API key is not configured');
+      }
+
       // Validate JSON
       const parsedPayload = JSON.parse(payload);
 
@@ -54,12 +61,22 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'X-Api-Key': API_KEY  // Add API key header
         },
         credentials: 'omit',
         mode: 'cors',
         body: payload
       });
+
+      // Handle API key related errors
+      if (response.status === 403) {
+        throw new Error('Invalid API key or unauthorized access');
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
       
