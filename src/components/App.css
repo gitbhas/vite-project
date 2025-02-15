@@ -119,8 +119,40 @@ button:hover {
 
 .documentation-container {
   display: block;
+  background-color: white;
+  border: 1px solid var(--aws-color-border);
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
+.doc-section {
+  margin-bottom: 30px;
+}
+
+.doc-section:last-child {
+  margin-bottom: 0;
+}
+
+.doc-section h3 {
+  color: var(--aws-color-primary);
+  margin-bottom: 10px;
+}
+
+.description {
+  margin: 10px 0;
+  color: #666;
+}
+
+.json-example {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 4px;
+  border: 1px solid var(--aws-color-border);
+  font-family: monospace;
+  white-space: pre-wrap;
+  margin-top: 10px;
+}
 .doc-section {
   margin-bottom: 30px;
 }
