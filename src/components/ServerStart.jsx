@@ -1,146 +1,173 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
+import { BedrockAgentRuntimeClient, RetrieveCommand } from "@aws-sdk/client-bedrock-agent-runtime";
 import './App.css';
 
 function App() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-  const [submitStatus, setSubmitStatus] = useState('');
-  const [searchName, setSearchName] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchError, setSearchError] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('chat'); // 'chat' or 'knowledge'
+  const [error, setError] = useState(null);
+  
+  // Configure AWS credentials from environment variables
+  const region = process.env.REACT_APP_AWS_REGION || 'us-east-1';
+  const credentials = {
+    accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY
+  };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // Initialize Bedrock clients
+  const bedrockRuntime = new BedrockRuntimeClient({ 
+    region,
+    credentials 
+  });
+
+  const bedrockAgentRuntime = new BedrockAgentRuntimeClient({
+    region,
+    credentials
+  });
+
+  // Knowledge Base ID from environment variables
+  const knowledgeBaseId = process.env.REACT_APP_KNOWLEDGE_BASE_ID;
+
+  const handleChat = async (message) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Format the message for Claude model
+      const prompt = {
+        prompt: `\n\nHuman: ${message}\n\nAssistant:`,
+        max_tokens_to_sample: 2000,
+        temperature: 0.7,
+        top_p: 0.9,
+      };
+
+      // Create the command to invoke the model
+      const command = new InvokeModelCommand({
+        modelId: "anthropic.claude-3-5-sonnet-20240620-v1:0", // or your preferred model
+        contentType: "application/json",
+        accept: "application/json",
+        body: JSON.stringify(prompt)
+      });
+
+      // Send the request to Bedrock
+      const response = await bedrockRuntime.send(command);
+      
+      // Parse the response
+      const responseBody = JSON.parse(new TextDecoder().decode(response.body));
+      
+      // Update messages with both user input and AI response
+      setMessages(prevMessages => [
+        ...prevMessages,
+        { role: 'user', content: message },
+        { role: 'assistant', content: responseBody.completion }
+      ]);
+
+    } catch (err) {
+      console.error('Error in chat:', err);
+      setError('Failed to get response from chat model');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const queryKnowledgeBase = async (query) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Create the command to query the knowledge base
+      const command = new RetrieveCommand({
+        knowledgeBaseId: knowledgeBaseId,
+        retrievalQuery: query,
+        retrievalConfiguration: {
+          vectorSearchConfiguration: {
+            numberOfResults: 3
+          }
+        }
+      });
+
+      // Send the request to Bedrock Agent Runtime
+      const response = await bedrockAgentRuntime.send(command);
+
+      // Update messages with both query and response
+      setMessages(prevMessages => [
+        ...prevMessages,
+        { role: 'user', content: query },
+        { 
+          role: 'assistant', 
+          content: response.retrievalResults
+            .map(result => result.content)
+            .join('\n\n') 
+        }
+      ]);
+
+    } catch (err) {
+      console.error('Error in knowledge base query:', err);
+      setError('Failed to query knowledge base');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitStatus('Submitting...');
+    if (!inputMessage.trim()) return;
 
-    try {
-      const response = await fetch('https://9c03dh9mv2.execute-api.us-east-1.amazonaws.com/initial/post-dynamo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    const message = inputMessage;
+    setInputMessage('');
 
-      if (response.ok) {
-        setSubmitStatus('Form submitted successfully!');
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        setSubmitStatus('Error submitting form. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setSubmitStatus('Error submitting form. Please try again.');
-    }
-  };
-
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    setSearchError('');
-    try {
-      const response = await fetch(
-        `https://9c03dh9mv2.execute-api.us-east-1.amazonaws.com/initial/search-dynamo?name=${encodeURIComponent(searchName)}`
-      );
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Search response:', data);
-        
-        if (data.items) {
-          setSearchResults(data.items);
-        } else {
-          setSearchResults([]);
-          setSearchError('No results found');
-        }
-      } else {
-        setSearchError('Error searching records');
-        setSearchResults([]);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setSearchError('Error searching records');
-      setSearchResults([]);
+    if (activeTab === 'chat') {
+      await handleChat(message);
+    } else {
+      await queryKnowledgeBase(message);
     }
   };
 
   return (
-    <div className="App">
-      <h1>Contact Form</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+    <div className="app-container">
+      <div className="header">
+        <h1>Bedrock AI Assistant</h1>
+        <div className="tabs">
+          <button 
+            className={`tab ${activeTab === 'chat' ? 'active' : ''}`}
+            onClick={() => setActiveTab('chat')}
+          >
+            Chat
+          </button>
+          <button 
+            className={`tab ${activeTab === 'knowledge' ? 'active' : ''}`}
+            onClick={() => setActiveTab('knowledge')}
+          >
+            Knowledge Base
+          </button>
         </div>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="message">Message:</label>
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-          ></textarea>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-      {submitStatus && <p className="status-message">{submitStatus}</p>}
+      </div>
 
-      <h2>Search Submissions</h2>
-      <form onSubmit={handleSearch}>
-        <div>
-          <label htmlFor="searchName">Search by Name:</label>
-          <input
-            type="text"
-            id="searchName"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Search</button>
-      </form>
+      <div className="messages-container">
+        {messages.map((msg, index) => (
+          <div key={index} className={`message ${msg.role}`}>
+            <div className="message-content">{msg.content}</div>
+          </div>
+        ))}
+        {isLoading && <div className="loading">Processing...</div>}
+        {error && <div className="error">{error}</div>}
+      </div>
 
-      {searchError && <p className="error-message">{searchError}</p>}
-      
-      {searchResults.length > 0 && (
-        <div className="search-results">
-          <h3>Search Results:</h3>
-          <ul>
-            {searchResults.map((result, index) => (
-              <li key={index} className="result-item">
-                <div><strong>Name:</strong> {result.name}</div>
-                <div><strong>Email:</strong> {result.email}</div>
-                <div><strong>Message:</strong> {result.message}</div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <form onSubmit={handleSubmit} className="input-form">
+        <input
+          type="text"
+          value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
+          placeholder={activeTab === 'chat' ? "Type your message..." : "Ask a question..."}
+          disabled={isLoading}
+        />
+        <button type="submit" disabled={isLoading || !inputMessage.trim()}>
+          Send
+        </button>
+      </form>
     </div>
   );
 }
