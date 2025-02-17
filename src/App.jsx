@@ -20,13 +20,13 @@ const App = () => {
   return (
     <>
       <nav className="navbar">
-        <div className="navbar-logo">AWS Server Management</div>
+        <div className="navbar-logo">AWS EC2 Server Operations</div>
         <button onClick={signOut} className="logout-button">Sign Out</button>
       </nav>
 
       <div className="container">
         <div className="page-header">
-          <h1 className="page-title">Server Management Console</h1>
+          <h1 className="page-title">Server Operations Console</h1>
         </div>
 
         <div className="card-container">
