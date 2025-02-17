@@ -20,7 +20,7 @@ const App = () => {
   return (
     <>
       <nav className="navbar">
-        <div className="navbar-logo">GENAI Chatbot</div>
+        <div className="navbar-logo">GENAI Chatbot App</div>
         <button onClick={signOut} className="logout-button">Sign Out</button>
       </nav>
 
