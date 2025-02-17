@@ -10,7 +10,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('chat'); // 'chat' or 'knowledge'
   const [error, setError] = useState(null);
   
-  // Configure AWS credentials from environment variables1
+  // Configure AWS credentials from environment variables
   const region = process.env.REACT_APP_AWS_REGION || 'us-east-1';
   const credentials = {
     accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
