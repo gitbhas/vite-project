@@ -20,7 +20,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form">
-        <h2>DDPS AWS EC2 Server Management</h2>
+        <h2>DDPS AWS EC2 Server Operations</h2>
         {error && <div className="error">{error}</div>}
         <div className="form-group">
           <label>Email:</label>
