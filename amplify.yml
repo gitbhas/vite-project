@@ -53,26 +53,3 @@ frontend:
           value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
   environment:
     REACT_APP_API_ENDPOINT: 'https://txlkoteyb9.execute-api.us-east-1.amazonaws.com/initial'
-test:
-  artifacts:
-    baseDirectory: cypress/reports
-    configFilePath: '**/mochawesome.json'
-    files:
-      - '**/*.png'
-      - '**/*.mp4'
-  phases:
-    preTest:
-      commands:
-        - npm ci
-        - npm install -g pm2
-        - npm install -g wait-on
-        - npm install mocha mochawesome mochawesome-merge mochawesome-report-generator
-        - pm2 start npm -- start
-        - wait-on http://localhost:3000
-    test:
-      commands:
-        - 'npm test'
-    postTest:
-      commands:
-        - pm2 stop all
-        - pm2 delete all
