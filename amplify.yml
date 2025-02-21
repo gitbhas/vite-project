@@ -8,12 +8,13 @@ frontend:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: dist
+    baseDirectory: build
     files:
       - '**/*'
   cache:
     paths:
       - node_modules/**/*
+
   customHeaders:
     - pattern: '**/*'
       headers:
@@ -53,3 +54,53 @@ frontend:
           value: 'OPTIONS,PUT,GET'
         - key: 'Access-Control-Expose-Headers'
           value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
+
+  # Optional - Configure environment variables
+  environmentVariables:
+    REACT_APP_API_ENDPOINT: 'https://txlkoteyb9.execute-api.us-east-1.amazonaws.com/initial'
+    # Don't put sensitive values here, use Amplify Environment Variables instead
+    # REACT_APP_API_KEY: 'your-api-key'
+
+test:
+  phases:
+    preTest:
+      commands:
+        - npm ci
+        - npm install -g pm2
+        - npm install -g wait-on
+        - npm install mocha mochawesome mochawesome-merge mochawesome-report-generator
+        - pm2 start npm -- start
+        - wait-on http://localhost:3000
+    test:
+      commands:
+        - 'npm test'
+    postTest:
+      commands:
+        - pm2 stop all
+        - pm2 delete all
+  artifacts:
+    baseDirectory: cypress/reports
+    configFilePath: '**/mochawesome.json'
+    files:
+      - '**/*.png'
+      - '**/*.mp4'
+
+# Optional - Configure branch specific settings
+#branches:
+#  main:
+#    cache:
+#      paths:
+#        - node_modules/**/*
+#  develop:
+#    cache:
+#      paths:
+#        - node_modules/**/*
+
+# Optional - Add build status notifications
+#notifications:
+#  - type: email
+#    address: your-email@example.com
+#    topics:
+#      - build
+#      - test
+#      - deploy
