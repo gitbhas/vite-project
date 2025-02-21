@@ -14,7 +14,6 @@ frontend:
   cache:
     paths:
       - node_modules/**/*
-
   customHeaders:
     - pattern: '**/*'
       headers:
@@ -30,11 +29,19 @@ frontend:
           value: 'strict-origin-only'
         - key: 'Strict-Transport-Security'
           value: 'max-age=31536000; includeSubDomains'
+        - key: 'Access-Control-Allow-Origin'
+          value: 'https://s3fileupload.dmcfz75pdzsyf.amplifyapp.com'
+        - key: 'Access-Control-Allow-Headers'
+          value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Origin'
+        - key: 'Access-Control-Allow-Methods'
+          value: 'OPTIONS,PUT,GET'
+        - key: 'Access-Control-Expose-Headers'
+          value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
     - pattern: '/static/**/*'
       headers:
         - key: 'Cache-Control'
           value: 'public, max-age=31536000, immutable'
-    - pattern: '/api/**/*'
+    - pattern: '/'
       headers:
         - key: 'Access-Control-Allow-Origin'
           value: 'https://s3fileupload.dmcfz75pdzsyf.amplifyapp.com'
@@ -44,24 +51,15 @@ frontend:
           value: 'OPTIONS,PUT,GET'
         - key: 'Access-Control-Expose-Headers'
           value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
-    - pattern: '/*'
-      headers:
-        - key: 'Access-Control-Allow-Origin'
-          value: 'https://s3fileupload.dmcfz75pdzsyf.amplifyapp.com'
-        - key: 'Access-Control-Allow-Headers'
-          value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Origin'
-        - key: 'Access-Control-Allow-Methods'
-          value: 'OPTIONS,PUT,GET'
-        - key: 'Access-Control-Expose-Headers'
-          value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
-
-  # Optional - Configure environment variables
-  environmentVariables:
+  environment:
     REACT_APP_API_ENDPOINT: 'https://txlkoteyb9.execute-api.us-east-1.amazonaws.com/initial'
-    # Don't put sensitive values here, use Amplify Environment Variables instead
-    # REACT_APP_API_KEY: 'your-api-key'
-
 test:
+  artifacts:
+    baseDirectory: cypress/reports
+    configFilePath: '**/mochawesome.json'
+    files:
+      - '**/*.png'
+      - '**/*.mp4'
   phases:
     preTest:
       commands:
@@ -78,29 +76,3 @@ test:
       commands:
         - pm2 stop all
         - pm2 delete all
-  artifacts:
-    baseDirectory: cypress/reports
-    configFilePath: '**/mochawesome.json'
-    files:
-      - '**/*.png'
-      - '**/*.mp4'
-
-# Optional - Configure branch specific settings
-#branches:
-#  main:
-#    cache:
-#      paths:
-#        - node_modules/**/*
-#  develop:
-#    cache:
-#      paths:
-#        - node_modules/**/*
-
-# Optional - Add build status notifications
-#notifications:
-#  - type: email
-#    address: your-email@example.com
-#    topics:
-#      - build
-#      - test
-#      - deploy
