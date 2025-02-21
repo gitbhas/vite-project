@@ -1,148 +1,143 @@
+// FileUpload.js
 import React, { useState } from 'react';
-import './App.css';
+import axios from 'axios';
+import './fileupload.css';
 
-function App() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-  const [submitStatus, setSubmitStatus] = useState('');
-  const [searchName, setSearchName] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchError, setSearchError] = useState('');
+const FileUpload = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // API configuration - use environment variables in production
+  const API_ENDPOINT = 'https://txlkoteyb9.execute-api.us-east-1.amazonaws.com/initial';
+  const API_KEY = "AmplifyCognitoAPI$24" //process.env.REACT_APP_API_KEY;
+  const BUCKET_NAME = 'ddps-brock-kbase';
+
+  const validateFile = (file) => {
+    // Add your file validation logic here
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'text/plain'];
+
+    if (file.size > maxSize) {
+      return 'File size must be less than 10MB';
+    }
+
+    if (!allowedTypes.includes(file.type)) {
+      return 'File type not supported. Please upload JPEG, PNG, PDF, or TXT files.';
+    }
+
+    return null;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitStatus('Submitting...');
-
-    try {
-      const response = await fetch('https://9c03dh9mv2.execute-api.us-east-1.amazonaws.com/initial/post-dynamo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setSubmitStatus('Form submitted successfully!');
-        setFormData({ name: '', email: '', message: '' });
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const validationError = validateFile(file);
+      if (validationError) {
+        setUploadStatus(validationError);
+        setSelectedFile(null);
+        event.target.value = ''; // Reset file input
       } else {
-        setSubmitStatus('Error submitting form. Please try again.');
+        setSelectedFile(file);
+        setUploadStatus('');
+        setUploadProgress(0);
       }
-    } catch (error) {
-      console.error('Error:', error);
-      setSubmitStatus('Error submitting form. Please try again.');
     }
   };
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    setSearchError('');
+  const handleUpload = async (event) => {
+    event.preventDefault();
+
+    if (!selectedFile) {
+      setUploadStatus('Please select a file first');
+      return;
+    }
+
+    setIsLoading(true);
+    setUploadStatus('Uploading...');
+
     try {
-      const response = await fetch(
-        `https://9c03dh9mv2.execute-api.us-east-1.amazonaws.com/initial/search-dynamo?name=${encodeURIComponent(searchName)}`
-      );
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Search response:', data);
-        
-        if (data.items) {
-          setSearchResults(data.items);
-        } else {
-          setSearchResults([]);
-          setSearchError('No results found');
+      const response = await axios({
+        method: 'PUT',
+        url: `${API_ENDPOINT}/${BUCKET_NAME}/${selectedFile.name}`,
+        data: selectedFile,
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          'x-api-key': API_KEY
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress(percentCompleted);
         }
-      } else {
-        setSearchError('Error searching records');
-        setSearchResults([]);
-      }
+      });
+
+      setUploadStatus('File uploaded successfully!');
+      console.log('Upload response:', response);
+      
+      // Reset form after successful upload
+      setSelectedFile(null);
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = '';
+      
     } catch (error) {
-      console.error('Error:', error);
-      setSearchError('Error searching records');
-      setSearchResults([]);
+      console.error('Upload error:', error);
+      setUploadStatus(`Upload failed: ${error.response?.data?.message || error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="App">
-      <h1>Contact Form</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Name:</label>
+    <div className="file-upload-container">
+      <h2>File Upload</h2>
+      <form onSubmit={handleUpload}>
+        <div className="upload-controls">
           <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
+            type="file"
+            onChange={handleFileSelect}
+            disabled={isLoading}
+            accept=".jpg,.jpeg,.png,.pdf,.txt"
           />
+          <button 
+            type="submit" 
+            disabled={!selectedFile || isLoading}
+          >
+            {isLoading ? 'Uploading...' : 'Upload'}
+          </button>
         </div>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="message">Message:</label>
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-          ></textarea>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-      {submitStatus && <p className="status-message">{submitStatus}</p>}
+        
+        {isLoading && (
+          <div className="progress-bar-container">
+            <div 
+              className="progress-bar" 
+              style={{ width: `${uploadProgress}%` }}
+            />
+            <div className="progress-text">{uploadProgress}%</div>
+          </div>
+        )}
 
-      <h2>Search Submissions</h2>
-      <form onSubmit={handleSearch}>
-        <div>
-          <label htmlFor="searchName">Search by Name:</label>
-          <input
-            type="text"
-            id="searchName"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Search</button>
-      </form>
+        {uploadStatus && (
+          <div className={`status-message ${
+            uploadStatus.includes('failed') || uploadStatus.includes('must') || uploadStatus.includes('Please') 
+              ? 'error' 
+              : 'success'
+          }`}>
+            {uploadStatus}
+          </div>
+        )}
 
-      {searchError && <p className="error-message">{searchError}</p>}
-      
-      {searchResults.length > 0 && (
-        <div className="search-results">
-          <h3>Search Results:</h3>
-          <ul>
-            {searchResults.map((result, index) => (
-              <li key={index} className="result-item">
-                <div><strong>Name:</strong> {result.name}</div>
-                <div><strong>Email:</strong> {result.email}</div>
-                <div><strong>Message:</strong> {result.message}</div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        {selectedFile && (
+          <div className="file-info">
+            <p>Selected file: {selectedFile.name}</p>
+            <p>Size: {(selectedFile.size / 1024).toFixed(2)} KB</p>
+          </div>
+        )}
+      </form>
     </div>
   );
-}
+};
 
-export default App;
+export default FileUpload;
