@@ -20,7 +20,7 @@ const App = () => {
   return (
     <>
       <nav className="navbar">
-        <div className="navbar-logo">User Management form</div>
+        <div className="navbar-logo">AWS S3 file upload app</div>
         <button onClick={signOut} className="logout-button">Sign Out</button>
       </nav>
 
