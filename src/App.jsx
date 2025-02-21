@@ -1,7 +1,7 @@
 // FileUpload.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../src/App.css';
+import './style.css';
 
 const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
