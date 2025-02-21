@@ -1,3 +1,30 @@
+# version: 1
+# frontend:
+#   phases:
+#     preBuild:
+#       commands:
+#         - npm ci
+#     build:
+#       commands:
+#         - npm run build
+#   artifacts:
+#     baseDirectory: build
+#     files:
+#       - '**/*'
+#   cache:
+#     paths:
+#       - node_modules/**/*
+#   customHeaders:
+#     - pattern: '**/*'
+#       headers:
+#         - key: 'Access-Control-Allow-Origin'
+#           value: 'https://s3fileupload.dmcfz75pdzsyf.amplifyapp.com'
+#         - key: 'Access-Control-Allow-Headers'
+#           value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Origin'
+#         - key: 'Access-Control-Allow-Methods'
+#           value: 'OPTIONS,PUT,GET'
+#         - key: 'Access-Control-Expose-Headers'
+#           value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
 version: 1
 frontend:
   phases:
@@ -8,21 +35,10 @@ frontend:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: build
+    baseDirectory: dist
     files:
       - '**/*'
   cache:
     paths:
       - node_modules/**/*
-  customHeaders:
-    - pattern: '**/*'
-      headers:
-        - key: 'Access-Control-Allow-Origin'
-          value: 'https://s3fileupload.dmcfz75pdzsyf.amplifyapp.com'
-        - key: 'Access-Control-Allow-Headers'
-          value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Origin'
-        - key: 'Access-Control-Allow-Methods'
-          value: 'OPTIONS,PUT,GET'
-        - key: 'Access-Control-Expose-Headers'
-          value: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
     
